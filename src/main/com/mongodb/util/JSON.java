@@ -59,9 +59,18 @@ public class JSON {
     /**
      *  Parses a JSON string and returns a corresponding Java object.
      *  The returned value is either a {@link com.mongodb.DBObject DBObject}
-     *  (if the string is a JSON document or array), or a 
-     *  <code>java.lang.Integer</code>, <code>java.lang.Double</code>
-     *  or <code>java.lang.Boolean</code> for the corresponding primitive types.
+     *  (if the string is a JSON object or array), or a boxed primitive
+     *  value according to the following mapping:
+     *  <p>
+     *  <code>java.lang.Boolean</code> for <code>true</code> or <code>false</code><br>
+     *  <code>java.lang.Integer</code> for integers between
+     *  Integer.MIN_VALUE and Integer.MAX_VALUE<br>
+     *  <code>java.lang.Long</code> for integers outside of this range<br>
+     *  <code>java.lang.Double</code> for floating point numbers
+     *  <p>
+     *  If the parameter is a string that contains a single-quoted
+     *  or double-quoted string, it is returned as an unquoted
+     *  <code>java.lang.String</code>.
      *
      * @param s the string to parse
      * @return a Java object representing the JSON data
@@ -72,13 +81,10 @@ public class JSON {
     }
 
     /**
-     * Parses a JSON string and calls the methods of a
-     * {@link org.bson.BSONCallback BSONCallback} during parsing.
-     * The returned value is a Java object representing the JSON string, which
-     * can be either a {@link com.mongodb.DBObject DBObject}
-     *  (if the string is a JSON document or array), or a 
-     *  <code>java.lang.Integer</code>, <code>java.lang.Double</code>
-     *  or <code>java.lang.Boolean</code> for the corresponding primitive types.
+     * Parses a JSON string and constructs a corresponding Java object by calling
+     * the methods of a {@link org.bson.BSONCallback BSONCallback} during parsing.
+     * If the callback <code>c</code> is null, this method is equivalent to
+     * {@link com.mongodb.JSON#parse(String) parse(String)}.
      * 
      * @param s the string to parse
      * @param c the BSONCallback to call during parsing
